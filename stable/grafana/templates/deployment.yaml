@@ -21,7 +21,7 @@ spec:
     type: {{ .Values.deploymentStrategy }}
   {{- if ne .Values.deploymentStrategy "RollingUpdate" }}
     rollingUpdate: null
-  {{- end }}    
+  {{- end }}
   template:
     metadata:
       labels:
@@ -152,6 +152,14 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+{{- if .Values.multidashboards.enabled }}
+{{- $dashboardsPath := printf "%s*.json" .Values.multidashboards.path -}}
+{{- range $dashboard, $bytes := .Files.Glob  $dashboardsPath }}
+            - name: {{ $dashboard | replace "/" "-"  | replace "." "-" }}
+              mountPath: "/var/lib/grafana/dashboards/{{ $dashboard | replace "/" "-" }}"
+              subPath: {{ $dashboard | replace "/" "-" }}"
+{{- end}}
+{{- end}}
           ports:
             - name: service
               containerPort: {{ .Values.service.port }}
@@ -267,4 +275,12 @@ spec:
           secret:
             secretName: {{ .secretName }}
             defaultMode: {{ .defaultMode }}
+      {{- end }}
+      {{- if .Values.multidashboards.enabled }}
+      {{- $dashboardsPath := printf "%s*.json" .Values.multidashboards.path -}}
+      {{- range $dashboard, $bytes := .Files.Glob  $dashboardsPath }}
+        - name: {{ $dashboard | replace "/" "-" | replace "." "-" }}
+          configMap:
+            name: {{ $dashboard | replace "/" "-" | replace "." "-" }}
+      {{- end }}
       {{- end }}

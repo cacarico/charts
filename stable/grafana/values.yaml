@@ -198,6 +198,11 @@ dashboards: {}
 dashboardsConfigMaps: {}
 #  default: ""
 
+## Create a config map for each json file inside the given path, works with sidecar
+multidashboards:
+  enabled: false
+  path: ""
+
 ## Grafana's primary configuration
 ## NOTE: values in map will be converted to ini format
 ## ref: http://docs.grafana.org/installation/configuration/

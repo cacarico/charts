@@ -1,0 +1,24 @@
+{{- if .Values.multidashboards.enabled }}
+{{- $dashboardsPath := printf "%s*.json" .Values.multidashboards.path -}}
+{{- range $dashboard, $bytes := .Files.Glob  $dashboardsPath }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "grafana.name" $ }}
+    chart: {{ template "grafana.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    grafana_dashboard: "1"
+{{- with $.Values.annotations }}
+  annotations:
+{{- toYaml . | indent 4 -}}
+{{- end }}
+  name: {{ $dashboard | replace "/" "-" | replace "." "-"}}
+data:
+  {{ $dashboard | replace "/" "-" }}: |
+{{  $.Files.Get $dashboard | indent 4 }}
+
+{{- end }}
+{{- end }}

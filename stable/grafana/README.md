@@ -77,6 +77,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `sidecar.datasources.enabled`   | Enabled the cluster wide search for datasources and adds/updates/deletes them in grafana |`false`       |
 | `sidecar.datasources.label`     | Label that config maps with datasources should have to be added | `false`                               |
 | `smtp.existingSecret`           | The name of an existing secret containing the SMTP credentials, this must have the keys `user` and `password`. | `""` |
+| `multidashboards.enabled`           | Enable helm to create configmaps for every json file inside the given directory`. | `"false"` |
+| `multidashboards.path`           | The path where helm will look for json files`. | `""` |
 
 ## Sidecar for dashboards
 
